@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+-
+
+### Changed
+-
+
+### Deprecated
+-
+
+### Removed
+-
+
+### Fixed
+-
+
+### Security
+-
+
 ## [0.4.2] - 2019-06-03
 ### Fixed
 - Fixed interaction with the server share in the auto annotation plugin
@@ -36,9 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Django 2.1.5 (security fix, https://nvd.nist.gov/vuln/detail/CVE-2019-3498)
 - Several scenarious which cause code 400 after undo/redo/save have been fixed (#315)
-
-### Security
--
 
 ## [0.3.0] - 2018-12-29
 ### Added
