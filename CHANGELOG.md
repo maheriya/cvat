@@ -61,6 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Django 2.1.5 (security fix, https://nvd.nist.gov/vuln/detail/CVE-2019-3498)
 - Several scenarious which cause code 400 after undo/redo/save have been fixed (#315)
 
+### Security
+-
+
 ## [0.3.0] - 2018-12-29
 ### Added
 - Ability to copy Object URL and Frame URL via object context menu and player context menu respectively.
