@@ -6,13 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- A converter to YOLO format
-- Installation guide
-- Linear interpolation for a single point
-- Video frame filter
+-
 
 ### Changed
-- Outside and keyframe buttons in the side panel for all interpolation shapes (they were only for boxes before)
+-
 
 ### Deprecated
 -
@@ -21,12 +18,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -
 
 ### Fixed
-- Fixed incorrect width of shapes borders in some cases
-- Fixed annotation parser for tracks with a start frame less than the first segment frame
-- Fixed interpolation on the server near outside frames
+-
 
 ### Security
 -
+
+## [Unreleased]
+### Added
+- A converter to YOLO format
+- Installation guide
+- Linear interpolation for a single point
+- Video frame filter
+
+### Changed
+- Outside and keyframe buttons in the side panel for all interpolation shapes (they were only for boxes before)
+
+### Fixed
+- Fixed incorrect width of shapes borders in some cases
+- Fixed annotation parser for tracks with a start frame less than the first segment frame
+- Fixed interpolation on the server near outside frames
 
 ## [0.4.2] - 2019-06-03
 ### Fixed
