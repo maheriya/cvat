@@ -53,6 +53,7 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
     :return:
     """
     KNOWN_TAGS = {'box', 'image', 'attribute'}
+    #output_dir = os.path.join(output_dir, "Annotations")
     os.makedirs(output_dir, exist_ok=True)
     cvat_xml = etree.parse(xml_file)
 
@@ -70,7 +71,13 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
             for box in boxes:
                 frameid  = int(box.get('frame'))
                 outside  = int(box.get('outside'))
-                #occluded = int(box.get('occluded'))  #currently unused
+                occluded = 0 ## Default if not found
+                if 'occluded' in box.attrib:  ## this is an attribute of 'box' element
+                    occluded = int(box.get('occluded'))
+                pose = 'Unspecified'
+                for attr in box.findall('attribute'):
+                    if (attr.get('name') == 'type'): ## Used for view type
+                        pose = attr.text
                 #keyframe = int(box.get('keyframe'))  #currently unused
                 xtl      = float(box.get('xtl'))
                 ytl      = float(box.get('ytl'))
@@ -80,7 +87,8 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
                 frame = frames.get( frameid, {} )
                 
                 if outside == 0:
-                    frame[ trackid ] = { 'xtl': xtl, 'ytl': ytl, 'xbr': xbr, 'ybr': ybr, 'label': label }
+                    frame[ trackid ] = { 'xtl': xtl, 'ytl': ytl, 'xbr': xbr, 'ybr': ybr, 'label': label,
+                                         'pose': pose, 'truncated': occluded }
 
                 frames[ frameid ] = frame
 
@@ -89,9 +97,9 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
 
         # Spit out a list of each object for each frame
         for frameid in sorted(frames.keys()):
-            #print( frameid )
+            print( frameid )
 
-            image_name = "%s_%08d.jpg" % (basename, frameid)
+            image_name = "%s_%08d.jpg" % (basename, frameid) ## KM: Revisit this for tracks. Hardcoded?
             image_path = os.path.join(image_dir, image_name)
             if not os.path.exists(image_path):
                 log.warn('{} image cannot be found. Is `{}` image directory correct?'.
@@ -107,12 +115,14 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
                 box = frame[objid]
 
                 label = box.get('label')
+                occluded = box.get('occluded')
+                pose = box.get('pose')
                 xmin = float(box.get('xtl'))
                 ymin = float(box.get('ytl'))
                 xmax = float(box.get('xbr'))
                 ymax = float(box.get('ybr'))
 
-                writer.addObject(label, xmin, ymin, xmax, ymax)
+                writer.addObject(label, xmin, ymin, xmax, ymax, pose, occluded)
 
             anno_name = os.path.basename(os.path.splitext(image_name)[0] + '.xml')
             anno_dir = os.path.dirname(os.path.join(output_dir, image_name))
@@ -121,7 +131,11 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
 
     else:
         for img_tag in cvat_xml.findall('image'):
-            image_name = img_tag.get('name')
+            ## Discard path component; we expect user to provide path to images directory.
+            ## It is probably easier for users to provide full path to images directory
+            ## rather than having to figure out how much of the path is embedded in the XML
+            ## as a relative or absolute path by CVAT.
+            image_name = os.path.basename(img_tag.get('name'))
             width = img_tag.get('width')
             height = img_tag.get('height')
             image_path = os.path.join(image_dir, image_name)
@@ -136,16 +150,25 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
 
             for box in img_tag.findall('box'):
                 label = box.get('label')
+                occluded = 0 ## Default if not found
+                if 'occluded' in box.attrib:  ## this is an attribute of 'box' element
+                    occluded = int(box.get('occluded'))
+                pose = 'Unspecified' ## Default if not found
+                for attr in box.findall('attribute'):
+                    if (attr.get('name') == 'type'): ## Used for view type
+                        pose = attr.text
+
                 xmin = float(box.get('xtl'))
                 ymin = float(box.get('ytl'))
                 xmax = float(box.get('xbr'))
                 ymax = float(box.get('ybr'))
 
-                writer.addObject(label, xmin, ymin, xmax, ymax)
+                writer.addObject(label, xmin, ymin, xmax, ymax, pose, occluded)
 
             anno_name = os.path.basename(os.path.splitext(image_name)[0] + '.xml')
-            anno_dir = os.path.dirname(os.path.join(output_dir, image_name))
+            anno_dir = output_dir #os.path.dirname(os.path.join(output_dir, image_name))
             os.makedirs(anno_dir, exist_ok=True)
+            print("Writing {} (image: {})".format(anno_name, image_name))
             writer.save(os.path.join(anno_dir, anno_name))
 
 
