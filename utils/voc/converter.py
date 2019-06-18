@@ -71,6 +71,7 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
             for box in boxes:
                 frameid  = int(box.get('frame'))
                 outside  = int(box.get('outside'))
+                ## occluded and pose are not tested within tracks
                 occluded = 0 ## Default if not found
                 if 'occluded' in box.attrib:  ## this is an attribute of 'box' element
                     occluded = int(box.get('occluded'))
@@ -168,7 +169,7 @@ def process_cvat_xml(xml_file, image_dir, output_dir):
             anno_name = os.path.basename(os.path.splitext(image_name)[0] + '.xml')
             anno_dir = output_dir #os.path.dirname(os.path.join(output_dir, image_name))
             os.makedirs(anno_dir, exist_ok=True)
-            print("Writing {} (image: {})".format(anno_name, image_name))
+            #print("Writing {} (image: {})".format(anno_name, image_name))
             writer.save(os.path.join(anno_dir, anno_name))
 
 
