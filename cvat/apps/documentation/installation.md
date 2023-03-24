@@ -91,7 +91,7 @@ server. Proxy is an advanced topic and it is not covered by the guide.
     below:
 
     ```sh
-    docker exec -it cvat bash -ic 'python3 ~/manage.py createsuperuser'
+    docker exec -it cvat_server bash -ic 'python3 ~/manage.py createsuperuser'
     ```
     Choose login and password for your admin account. For more information
     please read [Django documentation](https://docs.djangoproject.com/en/2.2/ref/django-admin/#createsuperuser).
